@@ -3,12 +3,16 @@
 */
 
 
-window.onload = init;
+// window.onload = init;
+
+$(document).ready(function () {
+           init();
+        });
+
 window.onresize = function () {
     Chart.defaults.global.legend.display = false;
     // Chart.defaults.global.tooltips.enabled = false;
-
-};
+    };
 
 function Disk_Chart(canvas, chart, name, used_space) {
     this.canvas = canvas;

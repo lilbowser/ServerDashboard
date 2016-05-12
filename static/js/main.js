@@ -3,6 +3,12 @@
 // window.onload = init;
 
 $(document).ready(function(){
+
+    url = document.location.href.split('#');
+    if(url[1] != undefined) {
+        $(selector + '[href=#'+url[1]+']').tab('show');
+    }
+
     $('#myTabs a').click(function (e) {
         e.preventDefault();
 

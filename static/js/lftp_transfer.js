@@ -2,13 +2,14 @@
  * Created by agoldfarb on 4/22/2016.
  */
 
-
         var mb = 1048576;
         var focused = true;
         var XMLRequestTime = 1000;
         var updateTimer = null;
 
-        window.onload = init;
+        $(document).ready(function () {
+           init();
+        });
 
         window.onfocus = function() {
             focused = true;
@@ -26,6 +27,7 @@
             }
             console.log("Tab lost focus");
         };
+
 
         function init(){
             updateStatus();
@@ -65,7 +67,9 @@
                     setProgBarValue(target + " #pb", info.percent);
                     Element.collapse('show');
                 }else{
-                    Element.collapse('hide');
+                    if(Element.hasClass("in")){
+                        Element.collapse('hide');
+                    }
                     Element.find("#Name")[0].innerHTML = "Name: ";
                     Element.find("#Size")[0].innerHTML ="Size: ";
                     Element.find("#Speed")[0].innerHTML = "Speed: ";

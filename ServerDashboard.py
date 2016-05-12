@@ -29,7 +29,12 @@ def disk_data_rand():
 
 @app.route('/transfers')
 def tran():
-    return render_template('tran.html')
+    return render_template('transfer.html')
+
+
+@app.route('/transfersa')
+def tranajax():
+    return render_template('transfer_AJAX.html')
 
 
 @app.route('/transfer_info')
@@ -59,6 +64,11 @@ def retry_transfer(file_name):
 @app.route('/disk')
 def disp_disks():
     return render_template('diskSpaceDash.html')
+
+
+@app.route('/diska')
+def disp_disks_ajax():
+    return render_template('diskSpaceDash_AJAX.html')
 
 
 @app.route('/diskd')
