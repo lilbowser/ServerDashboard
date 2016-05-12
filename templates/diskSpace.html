@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Disk Space</title>
+    <script src="/static/js/Chart.js"></script>
+    <script src="/static/jquery-2.2.3.js"></script>
+    <script type="text/javascript">
+        window.onload = init;
+        //window.onresize = setCanvas;
+        var xArray = [];
+        var yArray = [];
+        var zArray = [];
+        var canvas = null;
+        var xAxisLength = null;
+        var data = {
+            labels: [
+                "Red",
+                "Green",
+                "Yellow"
+            ],
+            datasets: [
+                {
+                    data: [300, 50, 100],
+                    backgroundColor: [
+                        "#FF6384",
+                        "#36A2EB",
+                        "#FFCE56"
+                    ],
+                    hoverBackgroundColor: [
+                        "#FF6384",
+                        "#36A2EB",
+                        "#FFCE56"
+                    ]
+                }]
+        };
+
+        function init(){
+            displayDonut()
+        }
+        function updateStatus() {
+            setTimeout(accelStatus, 50);
+            request = new XMLHttpRequest();
+            request.onreadystatechange = updateAccel;
+            request.open("GET", "/asyncaccel", true);
+            request.send(null);
+        }
+
+        function displayDonut(options){
+            console.log("Creating Chart");
+            var pychart = document.getElementById("chart-area");
+            var myPieChart = new Chart(pychart,{
+                onClick: function () {
+                    alert('click');
+                },
+                type: 'doughnut',
+                data: data,
+                legendCallback: function (chart) {
+                    return "";
+                },
+                options:{
+                    responsive: true,
+                    title: {
+                        display: true,
+                        text: 'C:/'
+                    },
+                    animation:{
+                        animateScale: true,
+                        onComplete: function(animation) {
+{#                            console.log('animate!');#}
+                            addTitle(animation);
+                        }
+
+                    },
+                    cutoutPercentage:70,
+                    scales:{
+                        xAxes:[{
+                            afterUpdate: function (scales) {
+                                console.log('updated!');
+
+                            },
+                            gridLines:{
+                                display: false
+                            },
+                            ticks:{
+                                display: false
+                            }
+                        }]
+                    }
+
+                }
+
+            });
+        }
+
+        function addTitle(ani) {
+            var ctx = ani.chartInstance.chart.ctx;
+            console.log("adding Text");
+            var canvasWidthvar = $('#chart-area').width();
+            var canvasHeight = $('#chart-area').height();
+            //this constant base on canvasHeight / 2.8em
+            var constant = 200;
+            var fontsize = (canvasHeight / constant).toFixed(2);
+            ctx.font = fontsize + "em Verdana";
+            ctx.textBaseline = "middle";
+            var total = 0;
+            $.each(data, function () {
+                total += parseInt(this.value, 10);
+            });
+{#            var tpercentage = ((data[0].value / total) * 100).toFixed(2) + "%";#}
+            var tpercentage = "C:/ - Miku";
+            var textWidth = ctx.measureText(tpercentage).width;
+            var txtPosx = Math.round((canvasWidthvar - textWidth) / 2);
+            ctx.fillText(tpercentage, txtPosx, canvasHeight / 2);
+        }
+
+{#    $(document).ready(function(){#}
+{#        var ctx = $('#chart-area').get(0).getContext("2d");#}
+{##}
+{#        var myDoughnut = new Chart(ctx,{#}
+{#            type: 'doughnut',#}
+{#            data: data,#}
+{#            options: {#}
+{#                animation:{#}
+{#                    animateScale:true#}
+{#                    },#}
+{#                responsive: true,#}
+{#                showTooltips: false,#}
+{#                percentageInnerCutout : 70,#}
+{#                segmentShowStroke : false,#}
+{#                beforeUpdate: function () {#}
+{#                    console.log("in func");#}
+{#                },#}
+{##}
+{#                afterFit: function() {#}
+{#                    console.log("adding Text");#}
+{#                    var canvasWidthvar = $('#chart-area').width();#}
+{#                    var canvasHeight = $('#chart-area').height();#}
+{#                    //this constant base on canvasHeight / 2.8em#}
+{#                    var constant = 114;#}
+{#                    var fontsize = (canvasHeight / constant).toFixed(2);#}
+{#                    ctx.font = fontsize + "em Verdana";#}
+{#                    ctx.textBaseline = "middle";#}
+{#                    var total = 0;#}
+{#                    $.each(data, function () {#}
+{#                        total += parseInt(this.value, 10);#}
+{#                    });#}
+{#                    var tpercentage = ((data[0].value / total) * 100).toFixed(2) + "%";#}
+{#                    var textWidth = ctx.measureText(tpercentage).width;#}
+{#                    var txtPosx = Math.round((canvasWidthvar - textWidth) / 2);#}
+{#                    ctx.fillText("tpercentage", txtPosx, canvasHeight / 2);#}
+{#                }#}
+{#            }#}
+{#        });#}
+{#    });#}
+    </script>
+</head>
+<body>
+    <h1>Data</h1>
+    <p id="C_Disk"></p>
+
+    <canvas id="chart-area" width="200" height="200"></canvas>
+
+
+</body>
+</html>

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>AJAX Test</title>
+    <script src="/static/accelChart.js"></script>
+    <script type="text/javascript">
+        window.onload = init;
+        window.onresize = setCanvas;
+        var xArray = [];
+        var yArray = [];
+        var zArray = [];
+        var canvas = null;
+        var xAxisLength = null;
+
+
+        function init(){
+
+            canvas = document.getElementById("accelGraph");
+            setCanvas();
+            xAxisLength = canvas.width;
+            document.getElementById("XAccel").innerHTML = "X: ";
+            document.getElementById("XAccel").style.color = "green";
+            document.getElementById("YAccel").innerHTML = "Y: ";
+            document.getElementById("YAccel").style.color = "red";
+            document.getElementById("ZAccel").innerHTML = "Z: ";
+            document.getElementById("ZAccel").style.color = "blue";
+            accelStatus();
+        }
+        function accelStatus() {
+            setTimeout(accelStatus, 1);
+            request = new XMLHttpRequest();
+            request.onreadystatechange = updateAccel;
+            request.open("GET", "/asyncaccel", true);
+            request.send(null);
+        }
+
+        function updateAccel() {
+            if ((request.readyState == 4) && (request.status == 200)) {
+                result = request.responseText;
+                accelData = result.split(",");
+                xData = accelData[0];
+                yData = accelData[1];
+                zData = accelData[2];
+                document.getElementById("XAccel").innerHTML = "X: " + xData + " m/s^2";
+                document.getElementById("YAccel").innerHTML = "Y: " + yData + " m/s^2";
+                document.getElementById("ZAccel").innerHTML = "Z: " + zData + " m/s^2";
+                addToArray(xArray, parseFloat(accelData[3]));
+                addToArray(yArray, parseFloat(accelData[4]));
+                addToArray(zArray, parseFloat(accelData[5]));
+                draw(xArray, yArray, zArray);
+            }
+        }
+        function setCanvas(){
+            var pw = canvas.parentNode.clientWidth;
+            var ph = canvas.parentNode.clientHeight;
+            canvas.height = pw * 0.8 * (canvas.height/canvas.width);
+            canvas.width = pw * 0.8;
+            canvas.style.top = (ph-canvas.height)/2 + "px";
+            canvas.style.left = (pw-canvas.width)/2 + "px";}
+
+
+    </script>
+</head>
+<body>
+    <h1>Accelerometer Data</h1>
+    <p id="XAccel"></p>
+    <p id="YAccel"></p>
+    <p id="ZAccel"></p>
+    <canvas id="accelGraph" width="500" height="100"></canvas>
+
+</body>
+</html>
